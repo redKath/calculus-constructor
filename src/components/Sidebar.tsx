@@ -1,3 +1,6 @@
+import katex from 'katex';
+import 'katex/dist/katex.min.css';
+import * as math from 'mathjs';
 import { useGraphStore } from '../store/useGraphStore';
 
 interface SidebarProps {
@@ -5,8 +8,21 @@ interface SidebarProps {
   onToggle: () => void;
 }
 
+function toLatex(expr: string): string {
+  try {
+    return math.parse(expr).toTex({ parenthesis: 'auto' });
+  } catch {
+    return expr;
+  }
+}
+
 export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
   const expression = useGraphStore((state) => state.expression);
+
+  const latexHtml = katex.renderToString(toLatex(expression), {
+    throwOnError: false,
+    displayMode: false,
+  });
 
   return (
     <aside
@@ -43,6 +59,14 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
         <button
           onClick={onToggle}
           aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          onMouseEnter={e => {
+            (e.currentTarget as HTMLButtonElement).style.background = '#f0f0f0';
+            (e.currentTarget as HTMLButtonElement).style.color = '#333';
+          }}
+          onMouseLeave={e => {
+            (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
+            (e.currentTarget as HTMLButtonElement).style.color = '#666';
+          }}
           style={{
             border: 'none',
             background: 'transparent',
@@ -52,13 +76,14 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
             color: '#666',
             padding: '4px 8px',
             borderRadius: '4px',
+            transition: 'background 0.15s ease, color 0.15s ease',
           }}
         >
-          {collapsed ? '›' : '‹'}
+          {collapsed ? '»' : '«'}
         </button>
       </div>
 
-      {/* Expression cell (Desmos-style row) */}
+      {/* Expression cell */}
       {!collapsed && (
         <div style={{ padding: '12px' }}>
           <div
@@ -72,21 +97,11 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
               background: '#fafafa',
             }}
           >
-            <span style={{ color: '#aaa', fontSize: '0.85rem', userSelect: 'none' }}>1</span>
-            <input
-              value={expression}
-              disabled
-              readOnly
-              style={{
-                flex: 1,
-                border: 'none',
-                background: 'transparent',
-                fontFamily: 'ui-monospace, "SF Mono", Menlo, Consolas, monospace',
-                fontSize: '1rem',
-                color: '#333',
-                outline: 'none',
-                cursor: 'not-allowed',
-              }}
+            <span style={{ color: '#aaa', fontSize: '0.85rem', userSelect: 'none', flexShrink: 0 }}>1</span>
+            <div
+              className="desmos-math-container"
+              dangerouslySetInnerHTML={{ __html: latexHtml }}
+              style={{ fontSize: '1.1rem', color: '#1a1a1a', lineHeight: 1.4 }}
             />
           </div>
         </div>

@@ -21,8 +21,11 @@ function FitViewOnChange({ dep }: { dep: string | null }) {
 }
 
 export default function App() {
-  const { graphData, focusedNodeId, setFocusedNodeId } = useGraphStore();
+  const { graphData, focusedNodeId, setFocusedNodeId, applyPowerRule } = useGraphStore();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  const focusedNode = graphData.nodes.find(n => n.id === focusedNodeId);
+  const isFocusedOnPower = focusedNode?.data.label === '^';
 
   const displayGraphData = focusedNodeId
     ? getSubtree(focusedNodeId, graphData)
@@ -46,18 +49,33 @@ export default function App() {
       <div style={{ flex: 1, height: '100%', backgroundColor: '#fafafa', position: 'relative' }}>
 
           {focusedNodeId !== null && (
-            <button
-              onClick={() => setFocusedNodeId(null)}
-              style={{
-                position: 'absolute', top: 12, left: 12, zIndex: 10,
-                padding: '6px 14px', borderRadius: '6px',
-                border: '1px solid #e0e0e0', background: '#ffffff',
-                fontSize: '0.875rem', cursor: 'pointer',
-                boxShadow: '0 1px 4px rgba(0,0,0,0.08)',
-              }}
-            >
-              ← Go Back
-            </button>
+            <div style={{ position: 'absolute', top: 12, left: 12, zIndex: 10, display: 'flex', gap: '8px' }}>
+              <button
+                onClick={() => setFocusedNodeId(null)}
+                style={{
+                  padding: '6px 14px', borderRadius: '6px',
+                  border: '1px solid #e0e0e0', background: '#ffffff',
+                  fontSize: '0.875rem', cursor: 'pointer',
+                  boxShadow: '0 1px 4px rgba(0,0,0,0.08)',
+                }}
+              >
+                ← Go Back
+              </button>
+              {isFocusedOnPower && (
+                <button
+                  onClick={applyPowerRule}
+                  style={{
+                    padding: '6px 14px', borderRadius: '6px',
+                    border: '1px solid #bfdbfe', background: '#eff6ff',
+                    fontSize: '0.875rem', cursor: 'pointer',
+                    boxShadow: '0 1px 4px rgba(0,0,0,0.08)',
+                    color: '#1d4ed8', fontWeight: 500,
+                  }}
+                >
+                  Apply Power Rule
+                </button>
+              )}
+            </div>
           )}
 
           <ReactFlow
