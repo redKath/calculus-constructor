@@ -11,9 +11,9 @@ export default function MathNode({ data }: NodeProps) {
   });
 
   return (
-    <div style={{ 
-      padding: '12px 24px', 
-      background: '#ffffff', 
+    <div style={{
+      padding: '12px 24px',
+      background: '#ffffff',
       borderRadius: '8px',
       // High-end subtle drop shadow instead of harsh borders
       boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.02)',
@@ -22,7 +22,8 @@ export default function MathNode({ data }: NodeProps) {
       fontFamily: 'system-ui, sans-serif',
       minWidth: '80px',
       textAlign: 'center',
-      transition: 'all 0.2s ease'
+      transition: 'all 0.2s ease',
+      cursor: 'pointer',
     }}>
       {/* Hide the default ugly React Flow circle handles by making them tiny/invisible */}
       <Handle 
