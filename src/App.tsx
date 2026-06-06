@@ -11,7 +11,7 @@ const nodeTypes = {
   mathNode: MathNode
 };
 
-function FitViewOnChange({ dep }: { dep: string | null }) {
+function FitViewOnChange({ dep }: { dep: string }) {
   const { fitView } = useReactFlow();
   useEffect(() => {
     const id = setTimeout(() => fitView({ duration: 300 }), 50);
@@ -21,7 +21,7 @@ function FitViewOnChange({ dep }: { dep: string | null }) {
 }
 
 export default function App() {
-  const { graphData, focusedNodeId, setFocusedNodeId, applyPowerRule } = useGraphStore();
+  const { graphData, focusedNodeId, setFocusedNodeId, applyPowerRule, expression } = useGraphStore();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   const focusedNode = graphData.nodes.find(n => n.id === focusedNodeId);
@@ -90,7 +90,7 @@ export default function App() {
               style: { stroke: '#333', strokeWidth: 2 },
             }}
           >
-            <FitViewOnChange dep={focusedNodeId} />
+            <FitViewOnChange dep={`${focusedNodeId}-${expression}`} />
             <Background
               variant={BackgroundVariant.Lines}
               color="#eee"
