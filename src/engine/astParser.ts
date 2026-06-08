@@ -26,8 +26,8 @@ function buildGraph(rootMathNode: math.MathNode): ParseResult {
 		const currentId = `node-${idCounter++}`;
 		nodeIdToAstNode.set(currentId, mathNode);
 
-		let label = '';
-		let tex = '';
+		let label: string;
+		let tex: string;
 
 		if (mathNode.type === 'OperatorNode') {
 			const opNode = mathNode as math.OperatorNode;
